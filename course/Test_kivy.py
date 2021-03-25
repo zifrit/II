@@ -9,8 +9,16 @@ import time
 
 engine = pyttsx3.init()
 
-cmd = {'chek_search': ('найти в интернете', 'нийди', 'найти', "поищи"),
-       'chek_open': ("открой", "открыть")}
+cmd = {'chek_search': ('найди', 'найти', "поищи"),
+       'chek_translate': ("перевести", "переведи"),
+       'search':
+           {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
+                       'найди в интернете', 'найти в интернете', 'поищи в интернете'),
+            'google': ('найди в гугле', 'найти в гугле', 'поищи в гугле'),
+            'youtube': ('найди в ютубе', 'найти в ютубе', 'поищи в ютубе',
+                        'найди в youtube', 'найти в youtube', 'поищи в youtube')
+            }
+       }
 
 
 def speak(what):
@@ -20,7 +28,6 @@ def speak(what):
 
 
 def say():
-
     r = sr.Recognizer()
     with sr.Microphone(device_index=1) as source:
         r.pause_threshold = 1
@@ -38,46 +45,60 @@ def say():
 
 def recognize_cmd(processed_voice):
     # в cmd будет присваивать адрес команды, percent уровень сравнение комнада должна совпадать на 50 %
-    RC = {'cmd': '', 'percent': 50}
+    RC = {'cmd': '', 'percent': 75}
     # извлечение адреса команд с и самих команд v
-    for c, v in cmd.items():
+    for c, v in cmd['search'].items():
         for x in v:
-            vrt = fuzz.ratio(processed_voice, x)  # сравнение с имеющимися командами и тем что сказал пользователь
+            # сравнение с имеющимися командами и тем что сказал пользователь
+            vrt = fuzz.ratio(processed_voice['command'], x)
             if vrt > RC['percent']:
-                RC['cmd'] = c
-                RC['percent'] = vrt
-    return RC
+                processed_voice['command'] = c
+    return processed_voice
 
 
-def chek(text):
+def chek1(text):
     # счетчик что бы понять где заканчивается нужное действие например "найди"
     # после того как он нашел его счетски покажет где оно закончилось с учетом пробела после него
     chek_nummber = 0
     # хранилише что бы хранить части предложения для сравния поиска
-    buffer = ''
+    buffer_words = ''
     for i in text:
         chek_nummber += 1
         if i != ' ':
-            buffer += i
-        else:
-            a = recognize_cmd(buffer)
+            buffer_words += i
+        elif buffer_words in cmd['chek_translate']:
+            len1 = 5
+            buffer = chek2(text, len1)
+            com_end_tcom = recognize_cmd(buffer)
+            openn(com_end_tcom)
+        elif buffer_words in cmd['chek_search']:
+            len1 = 3
+            buffer = chek2(text, len1)
+            com_end_tcom = recognize_cmd(buffer)
+            openn(com_end_tcom)
 
-            buffer = ''
+
+def chek2(text, len):
+    buffer = {'command': '', 'text_command': ''}
+    text = text.split()
+    for i in text:
+        if len > 0:
+            buffer['command'] = buffer['command'] + i + ' '
+            len -= 1
+        else:
+            buffer['text_command'] = buffer['text_command'] + i + ' '
+    return buffer
 
 
 def openn(text):
-    if text == 'youtube':
-        webbrowser.open('https://www.youtube.com/')
-    elif text == "Яндекс":
-        webbrowser.open('https://yandex.ru/')
-    elif text == 'google':
-        webbrowser.open('https://www.google.ru/')
+    if text['command'] == 'youtube':
+        webbrowser.open('https://www.youtube.com/results?search_query={}'.format(text['text_command']))
+    elif text['command'] == "yandex":
+        webbrowser.open('https://yandex.ru/search/?lr=28&text={}'.format(text['text_command']))
+    elif text['command'] == 'google':
+        webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
 
 
-def search(retur):
-    webbrowser.open('https://yandex.ru/search/?lr=28&text={}'.format(retur))
-
-
+# chek1('найди в ютубе как открыть банан')
 while True:
-    chek(say())
-
+    chek1(say())

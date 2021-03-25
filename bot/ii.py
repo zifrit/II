@@ -18,8 +18,7 @@ cmd = {
     # слова помехи
     "trb_v1": ('скажи', 'расскажи', 'покажи', 'сколько', 'произнеси', "расскрыть", 'в', 'на', 'до'),
     'trb_v2': (''),
-    'poisk': {'open': ('открыть', 'открой'),
-              'web': ('найди', 'найти', 'поищи', 'поиск'),
+    'poisk': {'web': ('найди', 'найти', 'поищи', 'поиск'),
               'translate': ('переведи', 'перевести')},
     # команды бота
     "cmd": {
@@ -31,7 +30,7 @@ cmd = {
         'google': ('google', 'открыть гугл', 'открыть google'),
         'yandex': ("yandex", 'яндекс', 'открыть яндекс', "открыть yandex"),
         'vk': ('vr', 'вк', 'вконтакте', 'в контакте', 'контакты'),
-        'search': ('найди', 'найти', 'поиск', 'найти в интернете'),
+        'search': ('найди', 'найти', 'поиск', 'найти в интернете', 'найди в google'),
         'translation_ru': ('перевод с русского на английский', 'перевести с русского на английский',
                            'переведи слово с русского на английский', 'перевести на английски', 'перевод на английский'),
         'translation_en': ('перевод с английского на русский', 'перевести с английского на русский',
@@ -90,13 +89,12 @@ def say2():
 # функции которая получает из say перемену с текстом, удоляя из текста слова помехи оставляя конкретные команды
 def command(voice):
     if voice.startswith(cmd["name"]):
-        speak('я вас слушаю')
         # удоляет имя бота в запросе
         for x in cmd["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
-        for x in cmd["trb_v1"]:
-            voice = voice.replace(x, '').strip()
+        # for x in cmd["trb_v1"]:
+        #     voice = voice.replace(x, '').strip()
 
         # нечеткое сравнение со словами командами
         voice = recognize_cmd(voice)
@@ -112,9 +110,11 @@ def command(voice):
         for x in cmd["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
-        for x in cmd["tbr"]:
-            voice = voice.replace(x, '').strip()
+        # for x in cmd["trb_v1"]:
+        #     voice = voice.replace(x, '').strip()
 
+
+        a = chek(voice)
         # нечеткое сравнение со словами командами
         processed_voice = recognize_cmd(voice)
         # выполнение команд
@@ -131,8 +131,8 @@ def chek(text):
         chek_nummber += 1
         if i != ' ':
             buffer += i
-        else:
-            a = recognize_cmd(buffer)
+        elif buffer in cmd['poisk']['web']:
+
 
             buffer = ''
 
