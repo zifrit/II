@@ -56,26 +56,18 @@ def recognize_cmd(processed_voice):
     return processed_voice
 
 
-def chek1(text):
-    # счетчик что бы понять где заканчивается нужное действие например "найди"
-    # после того как он нашел его счетски покажет где оно закончилось с учетом пробела после него
-    chek_nummber = 0
-    # хранилише что бы хранить части предложения для сравния поиска
-    buffer_words = ''
-    for i in text:
-        chek_nummber += 1
-        if i != ' ':
-            buffer_words += i
-        elif buffer_words in cmd['chek_translate']:
-            len1 = 5
-            buffer = chek2(text, len1)
-            com_end_tcom = recognize_cmd(buffer)
-            openn(com_end_tcom)
-        elif buffer_words in cmd['chek_search']:
-            len1 = 3
-            buffer = chek2(text, len1)
-            com_end_tcom = recognize_cmd(buffer)
-            openn(com_end_tcom)
+def chek(voice_text):
+    text = voice_text.split()
+    if text[0] in cmd['chek_search']:
+        len1 = 3
+        buffer = chek2(voice_text, len1)
+        cmd_end_textcom = recognize_cmd(buffer)
+        openn(cmd_end_textcom)
+    elif text[0] in cmd['chek_translate']:
+        len1 = 3
+        buffer = chek2(voice_text, len1)
+        cmd_end_textcom = recognize_cmd(buffer)
+        openn(cmd_end_textcom)
 
 
 def chek2(text, len):
@@ -101,4 +93,4 @@ def openn(text):
 
 # chek1('найди в ютубе как открыть банан')
 while True:
-    chek1(say())
+    chek(say())
