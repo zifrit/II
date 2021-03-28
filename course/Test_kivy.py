@@ -6,17 +6,20 @@ import pyttsx3
 import datetime
 import webbrowser
 import time
+from tkinter import *
 
 engine = pyttsx3.init()
 
 cmd = {'chek_search': ('найди', 'найти', "поищи"),
        'chek_translate': ("перевести", "переведи"),
+       'name': ('кеша', 'алиса'),
+       'question': ('как', 'где', 'почему', 'что'),
        'search':
            {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
                        'найди в интернете', 'найти в интернете', 'поищи в интернете'),
             'google': ('найди в гугле', 'найти в гугле', 'поищи в гугле'),
             'youtube': ('найди в ютубе', 'найти в ютубе', 'поищи в ютубе',
-                        'найди в youtube', 'найти в youtube', 'поищи в youtube')
+                        'найди в youtube', 'найти в youtube', 'поищи в youtube'),
             }
        }
 
@@ -26,6 +29,14 @@ def speak(what):
     engine.runAndWait()
     engine.stop()
 
+
+def name(voice_text):
+    text = voice_text.split()
+    if text[0] in cmd['name']:
+        del text[0]
+        chek(text)
+    else:
+        chek(text)
 
 def say():
     r = sr.Recognizer()
@@ -44,7 +55,7 @@ def say():
 
 
 def recognize_cmd(processed_voice):
-    # в cmd будет присваивать адрес команды, percent уровень сравнение комнада должна совпадать на 50 %
+    # в cmd будет присваивать адрес команды, percent уровень сравнение комнада должна совпадать на 75 %
     RC = {'cmd': '', 'percent': 75}
     # извлечение адреса команд с и самих команд v
     for c, v in cmd['search'].items():
@@ -56,23 +67,36 @@ def recognize_cmd(processed_voice):
     return processed_voice
 
 
+# функция получает текст из функции say и проверяет что нужно сделать найти, перевести...
 def chek(voice_text):
-    text = voice_text.split()
-    if text[0] in cmd['chek_search']:
+    # Разделяет тест на слова и предлоги, после чего образует из них список
+    # text = voice_text.split()
+    # Опридиляет нужноли пользователю что-то найти
+    if voice_text[0] in cmd['chek_search']:
         len1 = 3
-        buffer = chek2(voice_text, len1)
+        buffer = separator(voice_text, len1)
         cmd_end_textcom = recognize_cmd(buffer)
-        openn(cmd_end_textcom)
-    elif text[0] in cmd['chek_translate']:
+        commands(cmd_end_textcom)
+    # Опридиляет нужноли пользователю что-то перевести с en-ru или ru-en
+    elif voice_text[0] in cmd['chek_translate']:
         len1 = 3
-        buffer = chek2(voice_text, len1)
+        buffer = separator(voice_text, len1)
         cmd_end_textcom = recognize_cmd(buffer)
-        openn(cmd_end_textcom)
+        commands(cmd_end_textcom)
+    elif voice_text[0] in cmd['question']:
+        buffer = {'command': '', 'text_command': ''}
+        for i in voice_text:
+            buffer['text_command'] = buffer['text_command'] + i + ' '
+        buffer['command'] = 'question'
+        commands(buffer)
+    elif voice_text[0] in ['пока', 'прощай']:
+        sys.exit()
 
 
-def chek2(text, len):
+# резделяет команду и тест команды в раздельные списки словаря
+def separator(text, len):
     buffer = {'command': '', 'text_command': ''}
-    text = text.split()
+    # text = text.split()
     for i in text:
         if len > 0:
             buffer['command'] = buffer['command'] + i + ' '
@@ -82,15 +106,26 @@ def chek2(text, len):
     return buffer
 
 
-def openn(text):
+# поридиляет команду и выполняет ее
+def commands(text):
     if text['command'] == 'youtube':
         webbrowser.open('https://www.youtube.com/results?search_query={}'.format(text['text_command']))
-    elif text['command'] == "yandex":
+    elif text['command'] == "yandex" or text['command'] == 'question':
         webbrowser.open('https://yandex.ru/search/?lr=28&text={}'.format(text['text_command']))
     elif text['command'] == 'google':
         webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
+    elif text['command'] == ' ':
+        webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
 
 
-# chek1('найди в ютубе как открыть банан')
-while True:
-    chek(say())
+# name('найди как открыть банан')
+# while True:
+#     name(say())
+
+window = Tk()
+
+window.resizable(width=True, height=True)
+window.geometry('500x500')
+window.title('Window')
+window['bg'] = '#42424d'
+window.mainloop()

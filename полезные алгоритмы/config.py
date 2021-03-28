@@ -37,8 +37,13 @@ def a():
         root.bind(chr(i), print_)
 
 
-def b():
-    sys.exit()
+def с():
+    abc = lab.get()
+    lab.grid_forget()
+    ent = Label(root, width=13, font='Ubuntu 100', text=abc)
+    ent.pack()
+    lab.grid_forget()
+    print(abc)
 
 
 root = Tk()
@@ -48,15 +53,21 @@ root.title('picture')
 
 root.geometry('800x500')
 
-frame1 = Frame(root, bg='white', width=400, heigh=400)
-frame2 = Frame(root, bg='white', width=400, heigh=400)
+# frame1 = Frame(root, bg='white', width=400, heigh=400)
+# frame2 = Frame(root, bg='white', width=400, heigh=400)
+#
+# label1 = Label(root, width=12, font='Ubuntu 100')
+#
+# bt1 = Button(root, text='кнопка', font='Ubuntu 20', command=t)
+# bt2 = Button(root, text='кнопка', font='Ubuntu 20', command=b)
+#
+# bt1.grid(row=0, column=0, pady=225, padx=350)
 
-label1 = Label(root, width=12, font='Ubuntu 100')
+lab = Entry(root, width=3, font='Ubuntu 20')
+lab.pack()
+buttun = Button(root, text='кнопка', command=с)
+buttun.pack()
 
-bt1 = Button(root, text='кнопка', font='Ubuntu 20', command=t)
-bt2 = Button(root, text='кнопка', font='Ubuntu 20', command=b)
-
-bt1.grid(row=0, column=0, pady=225, padx=350)
 
 
 root.mainloop()
