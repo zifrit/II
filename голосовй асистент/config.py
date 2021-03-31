@@ -27,11 +27,8 @@ def t():
     bt2.grid(row = 3)
 
 
-def a():
-    bt2.grid_forget()
-    frame1.grid_forget()
-    frame2.grid_forget()
-    label1.pack()
+def t():
+    bt1['text'] = 'fwefe'
 
 
     for i in range(61, 123):
