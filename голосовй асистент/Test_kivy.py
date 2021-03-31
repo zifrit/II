@@ -38,6 +38,7 @@ def name(voice_text):
     else:
         chek(text)
 
+
 def say():
     r = sr.Recognizer()
     with sr.Microphone(device_index=1) as source:
@@ -83,13 +84,15 @@ def chek(voice_text):
         buffer = separator(voice_text, len1)
         cmd_end_textcom = recognize_cmd(buffer)
         commands(cmd_end_textcom)
+    # ищет задаваемы вопрос без обращшение
     elif voice_text[0] in cmd['question']:
         buffer = {'command': '', 'text_command': ''}
         for i in voice_text:
             buffer['text_command'] = buffer['text_command'] + i + ' '
         buffer['command'] = 'question'
         commands(buffer)
-    elif voice_text[0] in ['пока', 'прощай']:
+    # выход из системы
+    elif voice_text[0] in ['пока', 'прощай', 'выход']:
         sys.exit()
 
 
@@ -119,13 +122,46 @@ def commands(text):
 
 
 # name('найди как открыть банан')
-# while True:
-#     name(say())
+def assistent():
+    speak('слушаю')
+    # while True:
+    name(say())
+
 
 window = Tk()
-
-window.resizable(width=True, height=True)
+# главное окно
+window.resizable(width=False, height=False)
 window.geometry('500x500')
 window.title('Window')
-window['bg'] = '#42424d'
+window['bg'] = '#6c18f2'
+
+
+# функции акна
+def exit():
+    sys.exit()
+
+
+
+def setings():
+    win_fram.grid_forget()
+    win.grid_forget()
+    window.geometry('200x200')
+
+win = Label(window, width=45, heigh=7, bg='#f7cdf0',
+            font=('Times New Roman', 15),
+            anchor='nw',
+            text='привет как ваши дела что вы делаете')
+win.grid(row=0)
+win_fram = Frame(window, bg='#6c18f2')
+win_fram.grid(row=3, padx=10)
+# кнопки
+start = Button(win_fram, text='start', command=assistent)
+setings = Button(win_fram, text='setings', command = setings)
+command = Button(win_fram, text='command')
+exit = Button(win_fram, text='exit', command=exit)
+# упаковка кнопок
+start.grid(row=0, column=0, pady=10)
+setings.grid(row=0, column=1, pady=10)
+command.grid(row=0, column=2, pady=10)
+exit.grid(row=1, column=0, columnspan=3, stick='we')
 window.mainloop()
