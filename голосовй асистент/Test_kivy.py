@@ -12,7 +12,7 @@ from tkinter import *
 
 cmd1 = {'chek_search': ('найди', 'найти', "поищи"),
        'chek_translate': ("перевести", "переведи"),
-       'name': ('кеша', 'алиса'),
+       'name': ('алиса', 'ася', 'лиса', 'кеша', 'миша', 'kesha'),
        'question': ('как', 'где', 'почему', 'что'),
        'search':
            {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
@@ -20,18 +20,10 @@ cmd1 = {'chek_search': ('найди', 'найти', "поищи"),
             'google': ('найди в гугле', 'найти в гугле', 'поищи в гугле'),
             'youtube': ('найди в ютубе', 'найти в ютубе', 'поищи в ютубе',
                         'найди в youtube', 'найти в youtube', 'поищи в youtube'),
-            'russia':('переведи с английского на руский', 'перевести английского на руский',
-                      'перевод с английского на руский'),
-            'english':('переводи с русского на английский', 'перевести с русского на английский',
-                       ),
             }
        }
 
 cmd = {
-    # слова для выхода
-    'exit': ('пока', 'выключить', 'досвидание', 'прощай'),
-    # слова имени бота
-    "name": ('алиса', 'ася', 'лиса', 'кеша', 'миша', 'kesha'),
     # слова помехи
     "trb_v1": ('скажи', 'расскажи', 'покажи', 'сколько', 'произнеси', "расскрыть", 'в', 'на', 'до'),
     'poisk': {'web': ('найди', 'найти', 'поищи', 'поиск'),
@@ -40,17 +32,11 @@ cmd = {
     "cmd": {
         'time': ("сколько вермя", "время", "часы", "который сейчас час", "который час", "сколько часов",),
         'radio': ('включи радео', 'радио'),
-        'web': ("страница", 'станицу', 'баузер', 'browser', 'web browser', 'webbrowser', 'веббраузер', 'веб браузер'
-                , 'сайт', 'открой страницу', 'открыть брайзер', 'интернет'),
         'youtube': ("ютуб", "youtube", 'you tube', 'открыть ютуб', 'открыть youtube', 'открыть you tube'),
         'google': ('google', 'открыть гугл', 'открыть google'),
-        'yandex': ("yandex", 'яндекс', 'открыть яндекс', "открыть yandex"),
+        'yandex': ("yandex", 'яндекс', 'открыть яндекс', "открыть yandex", 'открой страницу', 'web browser',
+                   'открыть брайзер', 'страница'),
         'vk': ('vr', 'вк', 'вконтакте', 'в контакте', 'контакты'),
-        'search': ('найди', 'найти', 'поиск', 'найти в интернете', 'найди в google'),
-        'translation_ru': ('перевод с русского на английский', 'перевести с русского на английский',
-                           'переведи слово с русского на английский', 'перевести на английски', 'перевод на английский'),
-        'translation_en': ('перевод с английского на русский', 'перевести с английского на русский',
-                           'переведи слово с английского на русский', 'перевести на русский', 'перевод на русский'),
         'taimer': ('таймер', 'timer'),
         'zodiac': ('какой знак зодиака у меня', 'знак зодиака', 'зодиак', 'задиак', 'знак задиак'),
     }
@@ -104,18 +90,20 @@ def recognize_cmd(processed_voice):
 def chek(voice_text):
     # Разделяет тест на слова и предлоги, после чего образует из них список
     text_voice = voice_text.split()
-    # Опридиляет нужноли пользователю что-то найти
-    if text_voice[0] in cmd1['chek_search']:
+    # Опридиляет нужноли пользователю что-то найти или перевести
+    if text_voice[0] in cmd1['chek_search'] or text_voice[0] in cmd1['chek_translate']:
         len1 = 3
         buffer = separator(text_voice, len1)
-        cmd_end_textcom = recognize_cmd(buffer)
-        commands(cmd_end_textcom)
-    # Опридиляет нужноли пользователю что-то перевести с en-ru или ru-en
-    elif text_voice[0] in cmd1['chek_translate']:
-        len1 = 5
-        buffer = separator(text_voice, len1)
-        cmd_end_textcom = recognize_cmd(buffer)
-        commands(cmd_end_textcom)
+        print(buffer['command'])
+        if buffer['command'] in ['переведи на английский ', 'перевести на английский ']:
+            buffer['command'] = 'english'
+            commands(buffer)
+        elif buffer['command'] in ['переведи на русский ', 'перевести на русский ']:
+            buffer['command'] = 'russia'
+            commands(buffer)
+        else:
+            cmd_end_textcom = recognize_cmd(buffer)
+            commands(cmd_end_textcom)
     # ищет задаваемы вопрос без обращшение
     elif text_voice[0] in cmd1['question']:
         buffer = {'command': '', 'text_command': ''}
@@ -144,9 +132,9 @@ def separator(text, len):
 
 
 def command(voice):
-    if voice.startswith(cmd["name"]):
+    if voice.startswith(cmd1["name"]):
         # удоляет имя бота в запросе
-        for x in cmd["name"]:
+        for x in cmd1["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
         for x in cmd["trb_v1"]:
@@ -157,13 +145,10 @@ def command(voice):
         # выполнение команд
         execute_cmd(voice)
 
-    elif voice.startswith(cmd['exit']):
-        # speak('Досвидание пользователь')
-        sys.exit()
     # это необходимо если бот не услышал своё имя но команду нужно выполнить
     else:
         # удаляет имя бота в запросе
-        for x in cmd["name"]:
+        for x in cmd1["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
         for x in cmd["trb_v1"]:
@@ -194,11 +179,7 @@ def execute_cmd(execution_command):
     if execution_command['cmd'] == 'time':
         print(execution_command['cmd'])
         now = datetime.datetime.now()
-        speak("Сейчас " + str(now.hour) + ":" + str(now.minute))
-    # откроет новую фкладку баузера yandex
-    elif execution_command['cmd'] == 'web':
-        print(execution_command['cmd'])
-        webbrowser.open("https://yandex.ru/")
+        print("Сейчас " + str(now.hour) + ":" + str(now.minute))
     # открывает youtube
     elif execution_command['cmd'] == 'youtube':
         print(execution_command['cmd'])
@@ -212,24 +193,10 @@ def execute_cmd(execution_command):
         print(execution_command['cmd'])
         webbrowser.open("https://yandex.ru/")
     # открывает происковик и вводит в поисковик слова пользователя
-    elif execution_command['cmd'] == 'search':
-        print(execution_command['cmd'])
-        search(say2())
-    # открывает поисковик и переводит слова пользователя с русского на английский
-    elif execution_command['cmd'] == 'translation_ru':
-        print(execution_command['cmd'])
-        translate_ru_en(say2())
-    # открывает поисковик и переводит слова пользователя с английского на русский
-    elif execution_command['cmd'] == 'translation_en':
-        print(execution_command['cmd'])
-        translate_en_ru(say2())
     # открывает радио
     elif execution_command['cmd'] == 'radio':
         print(execution_command['cmd'])
         webbrowser.open("https://europaplus.ru/?go=chart40%20")
-    elif execution_command['cmd'] == 'taimer':
-        print(execution_command['cmd'])
-        timer(int(say2()))
     elif execution_command['cmd'] == 'zodiac':
         print(execution_command['cmd'])
         zodiac(say2())
@@ -242,11 +209,12 @@ def commands(text):
         webbrowser.open('https://yandex.ru/search/?lr=28&text={}'.format(text['text_command']))
     elif text['command'] == 'google':
         webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
-    elif text['command'] == '':
-        webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
+    elif text['command'] == 'russia':
+        webbrowser.open('https://translate.yandex.ru/?utm_source=wizard&lang=en-ru&text={}'.format(text['text_command']))
+    elif text['command'] == 'english':
+        webbrowser.open('https://translate.yandex.ru/?utm_source=wizard&lang=ru-en&text={}'.format(text['text_command']))
 
-
-# name('найди как открыть банан')
+# name('переведи на русский как это сделать')
 # def assistent():
 #     info['text'] = 'Я вас лашую'
 #     cmdd()
