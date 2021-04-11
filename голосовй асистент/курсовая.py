@@ -12,7 +12,7 @@ from tkinter import *
 
 cmd1 = {'chek_search': ('найди', 'найти', "поищи"),
        'chek_translate': ("перевести", "переведи"),
-       'name': ('алиса', 'ася', 'лиса', 'кеша', 'миша', 'kesha'),
+       'name': ('пятница', 'friday'),
        'question': ('как', 'где', 'почему', 'что'),
        'search':
            {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
@@ -90,12 +90,14 @@ def recognize_cmd(processed_voice):
 def chek(voice_text):
     # Разделяет тест на слова и предлоги, после чего образует из них список
     text_voice = voice_text.split()
+    # TODO проверка типа данных
     for i in text_voice:
         print(type(i))
     # Опридиляет нужноли пользователю что-то найти или перевести
     if text_voice[0] in cmd1['chek_search'] or text_voice[0] in cmd1['chek_translate']:
-        len1 = 3
-        buffer = separator(text_voice, len1)
+        length = 3
+        buffer = separator(text_voice, length)
+        # TODO проверка команды
         print(buffer['command'])
         if buffer['command'] in ['переведи на английский ', 'перевести на английский ']:
             buffer['command'] = 'english'
@@ -121,13 +123,13 @@ def chek(voice_text):
 
 
 # резделяет команду и тест команды в раздельные списки словаря
-def separator(text, len):
+def separator(text, length):
     buffer = {'command': '', 'text_command': ''}
     # text = text.split()
     for i in text:
-        if len > 0:
+        if length > 0:
             buffer['command'] = buffer['command'] + i + ' '
-            len -= 1
+            length -= 1
         else:
             buffer['text_command'] = buffer['text_command'] + i + ' '
     return buffer
@@ -262,56 +264,6 @@ def commands(text):
     elif text['command'] == 'english':
         webbrowser.open('https://translate.yandex.ru/?utm_source=wizard&lang=ru-en&text={}'.format(text['text_command']))
 
-# name()
-# def assistent():
-#     info['text'] = 'Я вас лашую'
-#     cmdd()
-#
-# def cmdd():
-#     while True:
-#         name(say())
 
 while True:
     name(say())
-
-window = Tk()
-# главное окно
-window.resizable(width=False, height=False)
-window.geometry('200x150')
-window.title('Window')
-window['bg'] = '#6c18f2'
-info = Label(window, font=('Times New Roman', 15), text = '')
-info.pack()
-btn1 = Button(window, text = 'кнопка', command = assistent)
-btn1.pack()
-
-
-# функции акна
-# def exit():
-#     sys.exit()
-#
-#
-#
-# def setings():
-#     win_fram.grid_forget()
-#     win.grid_forget()
-#     window.geometry('200x200')
-#
-# win = Label(window, width=45, heigh=7, bg='#f7cdf0',
-#             font=('Times New Roman', 15),
-#             anchor='nw',
-#             text='привет как ваши дела что вы делаете')
-# win.grid(row=0)
-# win_fram = Frame(window, bg='#6c18f2')
-# win_fram.grid(row=3, padx=10)
-# # кнопки
-# start = Button(win_fram, text='start', command=assistent)
-# setings = Button(win_fram, text='setings', command = setings)
-# command = Button(win_fram, text='command')
-# exit = Button(win_fram, text='exit', command=exit)
-# # упаковка кнопок
-# start.grid(row=0, column=0, pady=10)
-# setings.grid(row=0, column=1, pady=10)
-# command.grid(row=0, column=2, pady=10)
-# exit.grid(row=1, column=0, columnspan=3, stick='we')
-window.mainloop()
