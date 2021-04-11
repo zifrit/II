@@ -93,8 +93,8 @@ def command(voice):
         for x in cmd["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
-        # for x in cmd["trb_v1"]:
-        #     voice = voice.replace(x, '').strip()
+        for x in cmd["trb_v1"]:
+            voice = voice.replace(x, '').strip()
 
         # нечеткое сравнение со словами командами
         voice = recognize_cmd(voice)
@@ -110,31 +110,13 @@ def command(voice):
         for x in cmd["name"]:
             voice = voice.replace(x, '').strip()
         # удоляет слова помехи
-        # for x in cmd["trb_v1"]:
-        #     voice = voice.replace(x, '').strip()
+        for x in cmd["trb_v1"]:
+            voice = voice.replace(x, '').strip()
 
-
-        a = chek(voice)
         # нечеткое сравнение со словами командами
         processed_voice = recognize_cmd(voice)
         # выполнение команд
         execute_cmd(processed_voice)
-
-
-def chek(text):
-    # счетчик что бы понять где заканчивается нужное действие например "найди"
-    # после того как он нашел его счетски покажет где оно закончилось с учетом пробела после него
-    chek_nummber = 0
-    # хранилише что бы хранить части предложения для сравния поиска
-    buffer = ''
-    for i in text:
-        chek_nummber += 1
-        if i != ' ':
-            buffer += i
-        elif buffer in cmd['poisk']['web']:
-
-
-            buffer = ''
 
 
 # узнает что за команда была задана
@@ -234,41 +216,41 @@ def execute_cmd(execution_command):
         now = datetime.datetime.now()
         speak("Сейчас " + str(now.hour) + ":" + str(now.minute))
     # откроет новую фкладку баузера yandex
-    if execution_command['cmd'] == 'web':
+    elif execution_command['cmd'] == 'web':
         print(execution_command['cmd'])
         webbrowser.open("https://yandex.ru/")
     # открывает youtube
-    if execution_command['cmd'] == 'youtube':
+    elif execution_command['cmd'] == 'youtube':
         print(execution_command['cmd'])
         webbrowser.open("https://www.youtube.com/")
     # открывает google
-    if execution_command['cmd'] == 'google':
+    elif execution_command['cmd'] == 'google':
         print(execution_command['cmd'])
         webbrowser.open("https://www.google.ru/")
     # открывает yandex
-    if execution_command['cmd'] == 'yandex':
+    elif execution_command['cmd'] == 'yandex':
         print(execution_command['cmd'])
         webbrowser.open("https://yandex.ru/")
     # открывает происковик и вводит в поисковик слова пользователя
-    if execution_command['cmd'] == 'search':
+    elif execution_command['cmd'] == 'search':
         print(execution_command['cmd'])
         search(say2())
     # открывает поисковик и переводит слова пользователя с русского на английский
-    if execution_command['cmd'] == 'translation_ru':
+    elif execution_command['cmd'] == 'translation_ru':
         print(execution_command['cmd'])
         translate_ru_en(say2())
     # открывает поисковик и переводит слова пользователя с английского на русский
-    if execution_command['cmd'] == 'translation_en':
+    elif execution_command['cmd'] == 'translation_en':
         print(execution_command['cmd'])
         translate_en_ru(say2())
     # открывает радио
-    if execution_command['cmd'] == 'radio':
+    elif execution_command['cmd'] == 'radio':
         print(execution_command['cmd'])
         webbrowser.open("https://europaplus.ru/?go=chart40%20")
-    if execution_command['cmd'] == 'taimer':
+    elif execution_command['cmd'] == 'taimer':
         print(execution_command['cmd'])
         timer(int(say2()))
-    if execution_command['cmd'] == 'zodiac':
+    elif execution_command['cmd'] == 'zodiac':
         print(execution_command['cmd'])
         zodiac(say2())
 
