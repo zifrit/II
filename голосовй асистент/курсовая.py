@@ -52,9 +52,7 @@ def name(voice_text):
     text = voice_text.split()
     if text[0] in cmd1['name']:
         del text[0]
-        chek(voice_text)
-    else:
-        chek(voice_text)
+        chek(text)
 
 
 def say():
@@ -89,7 +87,7 @@ def recognize_cmd(processed_voice):
 # функция получает текст из функции say и проверяет что нужно сделать найти, перевести...
 def chek(voice_text):
     # Разделяет тест на слова и предлоги, после чего образует из них список
-    text_voice = voice_text.split()
+    text_voice = voice_text
     # TODO проверка типа данных
     for i in text_voice:
         print(type(i))
