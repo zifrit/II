@@ -11,36 +11,33 @@ from tkinter import *
 # engine = pyttsx3.init()
 
 cmd1 = {'chek_search': ('найди', 'найти', "поищи"),
-       'chek_translate': ("перевести", "переведи"),
-       'name': ('пятница', 'friday'),
-       'question': ('как', 'где', 'почему', 'что'),
-       'search':
-           {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
-                       'найди в интернете', 'найти в интернете', 'поищи в интернете'),
-            'google': ('найди в гугле', 'найти в гугле', 'поищи в гугле'),
-            'youtube': ('найди в ютубе', 'найти в ютубе', 'поищи в ютубе',
-                        'найди в youtube', 'найти в youtube', 'поищи в youtube'),
-            }
-       }
+        'chek_translate': ("перевести", "переведи"),
+        'name': ('пятница', 'friday'),
+        'question': ('как', 'где', 'почему', 'что'),
+        'search':
+            {'yandex': ('найди в яндексе', 'найти в яндексе', 'поищи в яндексе',
+                        'найди в интернете', 'найти в интернете', 'поищи в интернете'),
+             'google': ('найди в гугле', 'найти в гугле', 'поищи в гугле'),
+             'youtube': ('найди в ютубе', 'найти в ютубе', 'поищи в ютубе',
+                         'найди в youtube', 'найти в youtube', 'поищи в youtube'),
+             },
+        "trb_v1": ('скажи', 'расскажи', 'покажи', 'сколько', 'произнеси', "расскрыть", 'в', 'на', 'до'),
+        'poisk': {'web': ('найди', 'найти', 'поищи', 'поиск'),
+                  'translate': ('переведи', 'перевести')},
+        # команды бота
+        "cmd": {
+            'time': ("сколько вермя", "время", "часы", "который сейчас час", "который час", "сколько часов",),
+            'radio': ('включи радео', 'радио'),
+            'youtube': ("ютуб", "youtube", 'you tube', 'открыть ютуб', 'открыть youtube', 'открыть you tube'),
+            'google': ('google', 'открыть гугл', 'открыть google'),
+            'yandex': ("yandex", 'яндекс', 'открыть яндекс', "открыть yandex", 'открой страницу', 'web browser',
+                       'открыть брайзер', 'страница'),
+            'vk': ('vr', 'вк', 'вконтакте', 'в контакте', 'контакты'),
+            'taimer': ('таймер', 'timer'),
+            'zodiac': ('какой знак зодиака у меня', 'знак зодиака', 'зодиак', 'задиак', 'знак задиак'),
+        }
+        }
 
-cmd = {
-    # слова помехи
-    "trb_v1": ('скажи', 'расскажи', 'покажи', 'сколько', 'произнеси', "расскрыть", 'в', 'на', 'до'),
-    'poisk': {'web': ('найди', 'найти', 'поищи', 'поиск'),
-              'translate': ('переведи', 'перевести')},
-    # команды бота
-    "cmd": {
-        'time': ("сколько вермя", "время", "часы", "который сейчас час", "который час", "сколько часов",),
-        'radio': ('включи радео', 'радио'),
-        'youtube': ("ютуб", "youtube", 'you tube', 'открыть ютуб', 'открыть youtube', 'открыть you tube'),
-        'google': ('google', 'открыть гугл', 'открыть google'),
-        'yandex': ("yandex", 'яндекс', 'открыть яндекс', "открыть yandex", 'открой страницу', 'web browser',
-                   'открыть брайзер', 'страница'),
-        'vk': ('vr', 'вк', 'вконтакте', 'в контакте', 'контакты'),
-        'taimer': ('таймер', 'timer'),
-        'zodiac': ('какой знак зодиака у меня', 'знак зодиака', 'зодиак', 'задиак', 'знак задиак'),
-    }
-}
 
 # def speak(what):
 #     engine.say(what)
@@ -52,7 +49,9 @@ def name(voice_text):
     text = voice_text.split()
     if text[0] in cmd1['name']:
         del text[0]
-        chek(text)
+        chek(ls_text=text, full_text=voice_text)
+    else:
+        chek(ls_text=text, full_text=voice_text)
 
 
 def say():
@@ -85,9 +84,9 @@ def recognize_cmd(processed_voice):
 
 
 # функция получает текст из функции say и проверяет что нужно сделать найти, перевести...
-def chek(voice_text):
+def chek(ls_text, full_text):
     # Разделяет тест на слова и предлоги, после чего образует из них список
-    text_voice = voice_text
+    text_voice = ls_text
     # TODO проверка типа данных
     for i in text_voice:
         print(type(i))
@@ -117,7 +116,7 @@ def chek(voice_text):
     elif text_voice[0] in ['пока', 'прощай', 'выход']:
         sys.exit()
     else:
-        command(voice_text)
+        command(full_text)
 
 
 # резделяет команду и тест команды в раздельные списки словаря
@@ -134,32 +133,32 @@ def separator(text, length):
 
 
 def command(voice):
-    if voice.startswith(cmd1["name"]):
-        # удоляет имя бота в запросе
-        for x in cmd1["name"]:
-            voice = voice.replace(x, '').strip()
-        # удоляет слова помехи
-        for x in cmd["trb_v1"]:
-            voice = voice.replace(x, '').strip()
-
-        # нечеткое сравнение со словами командами
-        voice = recognize_cmd1(voice)
-        # выполнение команд
-        execute_cmd(voice)
+    # if voice.startswith(cmd1["name"]):
+    #     # удоляет имя бота в запросе
+    #     for x in cmd1["name"]:
+    #         voice = voice.replace(x, '').strip()
+    #     # удоляет слова помехи
+    #     for x in cmd["trb_v1"]:
+    #         voice = voice.replace(x, '').strip()
+    #
+    #     # нечеткое сравнение со словами командами
+    #     voice = recognize_cmd1(voice)
+    #     # выполнение команд
+    #     execute_cmd(voice)
 
     # это необходимо если бот не услышал своё имя но команду нужно выполнить
-    else:
-        # удаляет имя бота в запросе
-        for x in cmd1["name"]:
-            voice = voice.replace(x, '').strip()
-        # удоляет слова помехи
-        for x in cmd["trb_v1"]:
-            voice = voice.replace(x, '').strip()
+    # else:
+    # удаляет имя бота в запросе
+    for x in cmd1["name"]:
+        voice = voice.replace(x, '').strip()
+    # удоляет слова помехи
+    for x in cmd1["trb_v1"]:
+        voice = voice.replace(x, '').strip()
 
-        # нечеткое сравнение со словами командами
-        processed_voice = recognize_cmd1(voice)
-        # выполнение команд
-        execute_cmd(processed_voice)
+    # нечеткое сравнение со словами командами
+    processed_voice = recognize_cmd1(voice)
+    # выполнение команд
+    execute_cmd(processed_voice)
 
 
 # узнает что за команда была задана
@@ -167,7 +166,7 @@ def recognize_cmd1(processed_voice):
     # в cmd будет присваивать адрес команды, percent уровень сравнение комнада должна совпадать на 50 %
     RC = {'cmd': '', 'percent': 50}
     # извлечение адреса команд с и самих команд v
-    for c, v in cmd['cmd'].items():
+    for c, v in cmd1['cmd'].items():
         for x in v:
             vrt = fuzz.ratio(processed_voice, x)  # сравнение с имеющимися командами и тем что сказал пользователь
             if vrt > RC['percent']:
@@ -258,10 +257,13 @@ def commands(text):
     elif text['command'] == 'google':
         webbrowser.open('https://www.google.ru/search?q={}'.format(text['text_command']))
     elif text['command'] == 'russia':
-        webbrowser.open('https://translate.yandex.ru/?utm_source=wizard&lang=en-ru&text={}'.format(text['text_command']))
+        webbrowser.open(
+            'https://translate.yandex.ru/?utm_source=wizard&lang=en-ru&text={}'.format(text['text_command']))
     elif text['command'] == 'english':
-        webbrowser.open('https://translate.yandex.ru/?utm_source=wizard&lang=ru-en&text={}'.format(text['text_command']))
+        webbrowser.open(
+            'https://translate.yandex.ru/?utm_source=wizard&lang=ru-en&text={}'.format(text['text_command']))
 
 
+# name('пятница где находится китай')
 while True:
     name(say())
